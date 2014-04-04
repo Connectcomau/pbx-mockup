@@ -1,4 +1,24 @@
-var pbx_main = '';
+var pbx = {
+	main: '',
+	users: TAFFY(),
+	lines: TAFFY(),
+	groups: TAFFY()
+};
+
+function gen_id() {
+	var id = '', i;
+	var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	for (i = 0; i < 9; i++) id += possible.charAt(Math.floor(Math.random() * possible.length));
+	return id;
+}
+
+function supports_html5_storage() {
+  try {
+    return 'localStorage' in window && window.localStorage !== null;
+  } catch (e) {
+    return false;
+  }
+}
 
 function inject(source, dest, data) {
 	// grab the template source by id
@@ -24,7 +44,16 @@ function render_menu() {
 
 function render_main() {
 	// probably have to get data and shit
-	inject('t_'+pbx_main, 'main');
+	var data = {};
+
+	if (pbx_main === 'users') {
+		data.users = pbx.users().get();
+	}
+
+	inject('t_'+pbx_main, 'main', data);
+
+	// setup editable hooks
+	$('#main [data-e="y"]').editable();
 }
 
 function set_main(main) {
@@ -34,7 +63,21 @@ function set_main(main) {
 	render_main();
 }
 
+function init_db() {
+	pbx.users.insert([{ id: gen_id(), caller_id: 'Bob', name: 'Billy Bob', email: 'bob@bobson.com' }]);
+}
+
+function editable_handler(response, newValue) {
+	console.log(this);
+	console.log(arguments);
+}
+
 $(document).ready(function() {
+	// editable settings
+	$.fn.editable.defaults.mode = 'inline';
+	$.fn.editable.defaults.success = editable_handler;
+
+	init_db();
 	set_main('users');
 });
 

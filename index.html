@@ -4,9 +4,14 @@
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<title>PBX</title>
+		
 		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+		<link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
+		<link rel="stylesheet" href="styles.css">
+
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
 		<script src="vendor/handlebars-v1.3.0.js"></script>
 		<script src="vendor/taffy-min.js"></script>
 
@@ -15,22 +20,22 @@
 
 		<script id="t_menu" type="text/x-handlebars-template">
 			<div class="list-group">
-				<a href="#users" class="list-group-item {{#is active 'users'}}active{{/is}}" onclick="set_main('users')">
+				<a class="list-group-item {{#is active 'users'}}active{{/is}}" onclick="set_main('users')">
 					Users
 					<span class="badge">{{users}}</span>
 				</a>
-				<a href="#lines" class="list-group-item {{#is active 'lines'}}active{{/is}}" onclick="set_main('lines')">
+				<a class="list-group-item {{#is active 'lines'}}active{{/is}}" onclick="set_main('lines')">
 					Lines
 					<span class="badge">{{lines}}</span>
 				</a>
-				<a href="#groups" class="list-group-item {{#is active 'groups'}}active{{/is}}" onclick="set_main('groups')">
+				<a class="list-group-item {{#is active 'groups'}}active{{/is}}" onclick="set_main('groups')">
 					Hunt Groups
 					<span class="badge">{{groups}}</span>
 				</a>
 			</div>
 
 			<div class="list-group">
-				<a href="#" class="list-group-item {{#is active 'settings'}}active{{/is}}" onclick="set_main('settings')">
+				<a class="list-group-item {{#is active 'settings'}}active{{/is}}" onclick="set_main('settings')">
 					Settings
 				</a>
 			</div>
@@ -39,8 +44,8 @@
 		<script id="t_users" type="text/x-handlebars-template">
 			<div class="panel panel-primary">
 				<div class="panel-heading">
-					<button type="button" class="btn btn-default pull-right">Add User</button>
-					<h3 class="panel-title">Add and Configure Users</h3>
+					<a class="btn btn-default pull-right">Add User</a>
+					<h1 class="panel-title">Configure Users</h1>
 				</div>
 				<div class="panel-body">
 					Blah blah spiel
@@ -49,33 +54,67 @@
 				<table class="table">
         <thead>
           <tr>
-            <th>#</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Username</th>
+            <th>Caller ID</th>
+            <th>Name</th>
+            <th>Email</th>
+						<th></th>
           </tr>
         </thead>
         <tbody>
+					{{#each users}}
           <tr>
-            <td>1</td>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>@mdo</td>
+						<td><a href="#" data-e="y" data-type="text" data-title="Caller ID">{{caller_id}}</a></td>
+						<td><a href="#" data-e="y" data-type="text" data-title="Name">{{name}}</a></td>
+						<td><a href="#" data-e="y" data-type="text" data-title="Email">{{email}}</a></td>
+						<td><button type="button" class="close" aria-hidden="true">&times;</button></td>
           </tr>
-          <tr>
-            <td>2</td>
-            <td>Jacob</td>
-            <td>Thornton</td>
-            <td>@fat</td>
-          </tr>
-          <tr>
-            <td>3</td>
-            <td>Larry</td>
-            <td>the Bird</td>
-            <td>@twitter</td>
-          </tr>
+					{{/each}}
         </tbody>
       	</table>
+			</div>
+		</script>
+
+		<script id="t_lines" type="text/x-handlebars-template">
+			<div class="panel panel-primary">
+				<div class="panel-heading">
+					<a class="btn btn-default pull-right">Add Line</a>
+					<h3 class="panel-title">Configure Lines</h3>
+				</div>
+				<div class="panel-body">
+					Lines and stuff
+				</div>
+			</div>
+		</script>
+
+		<script id="t_groups" type="text/x-handlebars-template">
+			<div class="panel panel-primary">
+				<div class="panel-heading">
+					<a class="btn btn-default pull-right">Add Hunt Group</a>
+					<h3 class="panel-title">Configure Hunt Groups</h3>
+				</div>
+				<div class="panel-body">
+					Blah blah spiel probably explain what a Hunt Group is...
+				</div>
+			</div>
+		</script>
+
+		<script id="t_settings" type="text/x-handlebars-template">
+			<div class="panel panel-primary">
+				<div class="panel-heading">
+					<h3 class="panel-title">Auto Attendant</h3>
+				</div>
+				<div class="panel-body">
+					Blah stuff to configure
+				</div>
+			</div>
+
+			<div class="panel panel-danger">
+				<div class="panel-heading">
+					<h3 class="panel-title">Danger Zone</h3>
+				</div>
+				<div class="panel-body">
+					<a class="btn btn-danger">Delete All The Things</a>
+				</div>
 			</div>
 		</script>
 
@@ -84,13 +123,14 @@
 	<body>
 		<div class="container">
 
-			<div class="row">
-				<div class="col-md-3">
-					<h3>PBXOTRON</h3>
+			<nav class="navbar navbar-default" role="navigation">
+				<div class="container-fluid">
+					<div class="navbar-header">
+						<a class="navbar-brand">PBXOTRON</a>
+					</div>
+					<p class="navbar-text navbar-right">Signed in as <a class="navbar-link">Anonymous</a></p>
 				</div>
-				<div class="col-md-9">
-				</div>
-			</div>
+			</nav>
 
 			<div class="row">
 
