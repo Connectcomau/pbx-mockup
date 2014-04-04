@@ -9,21 +9,74 @@
 		<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 		<script src="vendor/handlebars-v1.3.0.js"></script>
 		<script src="vendor/taffy-min.js"></script>
+
+		<script src="handlebars-helpers.js"></script>
 		<script src="pbx.js"></script>
 
 		<script id="t_menu" type="text/x-handlebars-template">
-			<a href="#" class="list-group-item active">
-				Users
-				<span class="badge">12</span>
-			</a>
-			<a href="#" class="list-group-item">
-				Lines
-				<span class="badge">8</span>
-			</a>
-			<a href="#" class="list-group-item">
-				Hunt Groups
-				<span class="badge">0</span>
-			</a>
+			<div class="list-group">
+				<a href="#users" class="list-group-item {{#is active 'users'}}active{{/is}}" onclick="set_main('users')">
+					Users
+					<span class="badge">{{users}}</span>
+				</a>
+				<a href="#lines" class="list-group-item {{#is active 'lines'}}active{{/is}}" onclick="set_main('lines')">
+					Lines
+					<span class="badge">{{lines}}</span>
+				</a>
+				<a href="#groups" class="list-group-item {{#is active 'groups'}}active{{/is}}" onclick="set_main('groups')">
+					Hunt Groups
+					<span class="badge">{{groups}}</span>
+				</a>
+			</div>
+
+			<div class="list-group">
+				<a href="#" class="list-group-item {{#is active 'settings'}}active{{/is}}" onclick="set_main('settings')">
+					Settings
+				</a>
+			</div>
+		</script>
+
+		<script id="t_users" type="text/x-handlebars-template">
+			<div class="panel panel-primary">
+				<div class="panel-heading">
+					<button type="button" class="btn btn-default pull-right">Add User</button>
+					<h3 class="panel-title">Add and Configure Users</h3>
+				</div>
+				<div class="panel-body">
+					Blah blah spiel
+				</div>
+
+				<table class="table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Username</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>Mark</td>
+            <td>Otto</td>
+            <td>@mdo</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>Jacob</td>
+            <td>Thornton</td>
+            <td>@fat</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>Larry</td>
+            <td>the Bird</td>
+            <td>@twitter</td>
+          </tr>
+        </tbody>
+      	</table>
+			</div>
 		</script>
 
 	</head>
@@ -32,37 +85,21 @@
 		<div class="container">
 
 			<div class="row">
-				<div class="col-md-12">
-					<h3>PBX</h3>
+				<div class="col-md-3">
+					<h3>PBXOTRON</h3>
+				</div>
+				<div class="col-md-9">
 				</div>
 			</div>
 
 			<div class="row">
 
-				<div class="col-md-3">
-					<div id="menu" class="list-group">
-						<!-- template shit goes here -->
-					</div>
-
-					<div class="list-group">
-						<a href="#" class="list-group-item">
-							Settings
-						</a>
-					</div>
-
+				<div id="menu" class="col-md-3">
+					<!-- templates and shit -->
 				</div>
 				
 				<div id="main" class="col-md-9">
-
-					<div class="panel panel-default">
-						<div class="panel-heading">
-							<h3 class="panel-title">Add and Configure Users</h3>
-						</div>
-						<div class="panel-body">
-							Blah blah spiel
-						</div>
-					</div>
-
+					<!-- template shit here -->
 				</div>
 
 			</div>
