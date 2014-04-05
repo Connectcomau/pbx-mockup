@@ -44,7 +44,7 @@
 		<script id="t_users" type="text/x-handlebars-template">
 			<div class="panel panel-primary">
 				<div class="panel-heading">
-					<a class="btn btn-default pull-right">Add User</a>
+					<a class="btn btn-default pull-right" onclick="add_user()">Add User</a>
 					<h1 class="panel-title">Configure Users</h1>
 				</div>
 				<div class="panel-body">
@@ -54,7 +54,7 @@
 				<table class="table">
         <thead>
           <tr>
-            <th>Caller ID</th>
+            <th>CallerID</th>
             <th>Name</th>
             <th>Email</th>
 						<th></th>
@@ -63,10 +63,14 @@
         <tbody>
 					{{#each users}}
           <tr>
-						<td><a href="#" data-e="y" data-type="text" data-title="Caller ID">{{caller_id}}</a></td>
-						<td><a href="#" data-e="y" data-type="text" data-title="Name">{{name}}</a></td>
-						<td><a href="#" data-e="y" data-type="text" data-title="Email">{{email}}</a></td>
-						<td><button type="button" class="close" aria-hidden="true">&times;</button></td>
+						<td><a href="#" data-e="y" data-type="text" data-id="{{id}}" data-col="caller_id">{{caller_id}}</a></td>
+						<td><a href="#" data-e="y" data-type="text" data-id="{{id}}" data-col="name">{{name}}</a></td>
+						<td><a href="#" data-e="y" data-type="text" data-id="{{id}}" data-col="email">{{email}}</a></td>
+						<td>
+							<button type="button" class="close" aria-hidden="true" onclick="delete_user('{{id}}')">
+								&times;
+							</button>
+						</td>
           </tr>
 					{{/each}}
         </tbody>
@@ -77,24 +81,110 @@
 		<script id="t_lines" type="text/x-handlebars-template">
 			<div class="panel panel-primary">
 				<div class="panel-heading">
-					<a class="btn btn-default pull-right">Add Line</a>
+					<a class="btn btn-default pull-right" onclick="add_line()">Add Line</a>
 					<h3 class="panel-title">Configure Lines</h3>
 				</div>
 				<div class="panel-body">
 					Lines and stuff
 				</div>
+
+				<table class="table">
+        <thead>
+          <tr>
+            <th>Ext #</th>
+            <th>User</th>
+            <th>Voicemail</th>
+						<th>Show CallerID</th>
+						<th></th>
+          </tr>
+        </thead>
+        <tbody>
+					{{#each lines}}
+          <tr>
+						<td><a data-e="y" data-type="text" data-id="{{id}}" data-col="ext">{{ext}}</a></td>
+						<td><a data-e="y" data-type="select" data-value="{{user_id}}" data-id="{{id}}" data-col="user_id" data-source="{{names}}">{{user_name}}</a></td>
+						<td>
+							<a onclick="toggle_value('lines','{{id}}','voicemail')">
+								{{#is voicemail}}
+									<span class="glyphicon glyphicon-check"></span>
+								{{else}}
+									<span class="glyphicon glyphicon-unchecked"></span>
+								{{/is}}
+							</a>
+						</td>
+						<td>
+							<a onclick="toggle_value('lines','{{id}}','show_callerid')">
+								{{#is show_callerid}}
+									<span class="glyphicon glyphicon-check"></span>
+								{{else}}
+									<span class="glyphicon glyphicon-unchecked"></span>
+								{{/is}}
+							</a>
+						</td>
+						<td>
+							<button type="button" class="close" aria-hidden="true" onclick="delete_line('{{id}}')">
+								&times;
+							</button>
+						</td>
+          </tr>
+					{{/each}}
+        </tbody>
+      	</table>
 			</div>
 		</script>
 
 		<script id="t_groups" type="text/x-handlebars-template">
 			<div class="panel panel-primary">
 				<div class="panel-heading">
-					<a class="btn btn-default pull-right">Add Hunt Group</a>
+					<a class="btn btn-default pull-right" onclick="add_group()">Add Hunt Group</a>
 					<h3 class="panel-title">Configure Hunt Groups</h3>
 				</div>
 				<div class="panel-body">
-					Blah blah spiel probably explain what a Hunt Group is...
+					<p>Blah blah spiel probably explain what a Hunt Group is...</p>
+
+					{{#each groups}}
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<button type="button" class="close" aria-hidden="true" onclick="delete_group('{{id}}')">
+								&times;
+							</button>
+							<h3 class="panel-title">Hunt Group {{id}}</h3>
+						</div>
+						<div class="panel-body">
+							<div class="col-md-6">
+								<h4>Lines</h4>
+								<p>
+								{{#each lines}}
+									Line<br>
+								{{/each}}
+								</p>
+								<div class="btn btn-default btn-sm" onclick="add_line_to_group('{{id}}')">Add Line</div>
+							</div>
+							<div class="col-md-4">
+								<h4>Call Distribution Strategy</h4>
+								<a onclick="toggle_value('groups','{{id}}','ring_all')">
+									{{#is ring_all}}
+										<span class="glyphicon glyphicon-check"></span>
+									{{else}}
+										<span class="glyphicon glyphicon-unchecked"></span>
+									{{/is}}
+								</a>
+								Ring All
+								<a onclick="toggle_value('groups','{{id}}','ring_all')">
+								{{#is ring_all}}
+									<span class="glyphicon glyphicon-unchecked"></span>
+								{{else}}
+									<span class="glyphicon glyphicon-check"></span>
+								{{/is}}
+								</a>
+								Rotate
+							</div>
+						</div>
+					</div>
+					{{/each}}
+
 				</div>
+
 			</div>
 		</script>
 
@@ -113,7 +203,7 @@
 					<h3 class="panel-title">Danger Zone</h3>
 				</div>
 				<div class="panel-body">
-					<a class="btn btn-danger">Delete All The Things</a>
+					<a class="btn btn-danger" onclick="reset()">Delete All The Things</a>
 				</div>
 			</div>
 		</script>
@@ -126,7 +216,7 @@
 			<nav class="navbar navbar-default" role="navigation">
 				<div class="container-fluid">
 					<div class="navbar-header">
-						<a class="navbar-brand">PBXOTRON</a>
+						<a class="navbar-brand">PBX-O-TRON</a>
 					</div>
 					<p class="navbar-text navbar-right">Signed in as <a class="navbar-link">Anonymous</a></p>
 				</div>
