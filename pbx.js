@@ -155,6 +155,16 @@ function add_line() {
 	render_main();
 }
 
+function auto_lines() {
+	var start = 100;
+	pbx.users().get().forEach(function(u) {
+		pbx.lines.insert([{id: gen_id(), ext: start.toString(), user_id: u.id}]);
+		start++;
+	});
+	render_menu();
+	render_main();
+}
+
 function delete_line(id) {
 	pbx.lines().filter({id: id}).remove();
 	render_menu();
