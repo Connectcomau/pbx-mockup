@@ -6,7 +6,22 @@ var pbx = {
 };
 
 Handlebars.registerHelper('names', function(options) {
-	return JSON.stringify(pbx.users().get().map(function(u) { return {value: u.id, text: u.name}; }));
+	return JSON.stringify(pbx.users().get().map(function(u) { return {value: u.id, text: u.name || ''}; }));
+});
+
+Handlebars.registerHelper('user_name', function(id, options) {
+	var user = pbx.users({id: id}).get();
+	if (user.length) return user[0].name;
+});
+
+Handlebars.registerHelper('line_info', function(id, options) {
+	var line = pbx.lines({id: id}).get();
+	if (line.length) {
+		var user = pbx.users({id: line[0].user_id}).get();
+		var user_name = 'DELETED';
+		if (user.length) user_name = user[0].name;
+		return line[0].ext + ' ' + user_name;
+	}
 });
 
 function gen_id() {
@@ -45,14 +60,6 @@ function render_main() {
 		lines: pbx.lines().get(),
 		groups: pbx.groups().get()
 	};
-
-	// attach extra data on lines for showing names
-	data.lines.forEach(function(l) {
-		if (l.user_id) {
-			var u = pbx.users({id: l.user_id}).get();
-			if (u.length) l.user_name = u[0].name;
-		}
-	});
 
 	inject('t_'+pbx_main, 'main', data);
 
@@ -131,7 +138,21 @@ function toggle_value(db, id, col) {
 }
 
 function add_line_to_group(group_id) {
-	pbx.groups({id: group_id}).update(function() { this.lines.push({}); return this; });
+	// grab the selected line
+	var line_id = $('select.hunt_' + group_id).val();
+	if ( ! line_id) return false;
+	pbx.groups({id: group_id}).update(function() { this.lines.push({ line_id: line_id }); return this; });
+	render_main();
+}
+
+function delete_line_in_group(index, group_id) {
+	var group = pbx.groups({id: group_id});
+	if (group.get().length) {
+		group.update(function() {
+			this.lines.splice(index, 1);
+			return this;
+		});
+	}
 	render_main();
 }
 

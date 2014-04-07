@@ -103,7 +103,7 @@
 					{{#each lines}}
           <tr>
 						<td><a data-e="y" data-type="text" data-id="{{id}}" data-col="ext">{{ext}}</a></td>
-						<td><a data-e="y" data-type="select" data-value="{{user_id}}" data-id="{{id}}" data-col="user_id" data-source="{{names}}">{{user_name}}</a></td>
+						<td><a data-e="y" data-type="select" data-value="{{user_id}}" data-id="{{id}}" data-col="user_id" data-source="{{names}}">{{user_name user_id}}</a></td>
 						<td>
 							<a onclick="toggle_value('lines','{{id}}','voicemail')">
 								{{#is voicemail}}
@@ -156,9 +156,23 @@
 								<h4>Lines</h4>
 								<p>
 								{{#each lines}}
-									Line<br>
+									<div class="col-md-9">
+										{{line_info line_id}}
+									</div>
+									<div class="col-md-1">
+										<button type="button" class="close" aria-hidden="true" onclick="delete_line_in_group({{@index}}, '{{../id}}')">
+											&times;
+										</button>
+									</div>
+									<div class="clearfix"></div>
 								{{/each}}
 								</p>
+								<select class="form-control input-sm hunt_select hunt_{{id}}">
+									<option value="">-- Select Line</option>
+									{{#each ../lines}}
+										<option value="{{id}}">{{user_name user_id}}</option>
+									{{/each}}
+								</select>
 								<div class="btn btn-default btn-sm" onclick="add_line_to_group('{{id}}')">Add Line</div>
 							</div>
 							<div class="col-md-4">
