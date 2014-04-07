@@ -9,7 +9,7 @@ var pbx = {
 function user_name(id) {
 	var user = pbx.users({id: id}).get();
 	var name = 'DELETED';
-	if (id === undefined) name = '';
+	if ( ! id) name = '';
 	if (user.length) name = user[0].name;
 	return name;
 }
@@ -19,7 +19,11 @@ Handlebars.registerHelper('names', function(options) {
 });
 
 Handlebars.registerHelper('lines_select', function(options) {
-	return JSON.stringify(pbx.lines().get().map(function(l) { return {value: l.id, text: l.ext + ' ' + user_name(l.user_id) || ''}; }));
+	var lines = [{value: null, text: ''}];
+	pbx.lines().each(function(l) {
+		lines.push({value: l.id, text: l.ext + ' ' + user_name(l.user_id) || ''});
+	});
+	return JSON.stringify(lines);
 });
 
 Handlebars.registerHelper('user_name', function(id, options) {
