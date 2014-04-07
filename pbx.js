@@ -6,8 +6,20 @@ var pbx = {
 	ivr: TAFFY()
 };
 
+function user_name(id) {
+	var user = pbx.users({id: id}).get();
+	var name = 'DELETED';
+	if (id === undefined) name = '';
+	if (user.length) name = user[0].name;
+	return name;
+}
+
 Handlebars.registerHelper('names', function(options) {
 	return JSON.stringify(pbx.users().get().map(function(u) { return {value: u.id, text: u.name || ''}; }));
+});
+
+Handlebars.registerHelper('lines_select', function(options) {
+	return JSON.stringify(pbx.lines().get().map(function(l) { return {value: l.id, text: l.ext + ' ' + user_name(l.user_id) || ''}; }));
 });
 
 Handlebars.registerHelper('user_name', function(id, options) {
@@ -18,10 +30,7 @@ Handlebars.registerHelper('user_name', function(id, options) {
 Handlebars.registerHelper('line_info', function(id, options) {
 	var line = pbx.lines({id: id}).get();
 	if (line.length) {
-		var user = pbx.users({id: line[0].user_id}).get();
-		var user_name = 'DELETED';
-		if (user.length) user_name = user[0].name;
-		return line[0].ext + ' ' + user_name;
+		return line[0].ext + ' ' + user_name(line[0].user_id);
 	}
 });
 

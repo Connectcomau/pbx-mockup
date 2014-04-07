@@ -214,12 +214,7 @@
 						{{#each ivr}}
 						<div class="btn btn-info btn-sm">{{id}}</div>
 						<span class="glyphicon glyphicon-arrow-right"></span>
-						<select class="form-input input-sm hunt_select">
-							<option value="">-- Select Line</option>
-							{{#each ../lines}}
-								<option value="{{id}}">{{ext}} {{user_name user_id}}</option>
-							{{/each}}
-						</select>
+						<a data-e="y" data-type="select" data-value="{{line_id}}" data-id="{{id}}" data-col="line_id" data-source="{{lines_select}}">{{line_info line_id}}</a>
 						<br>
 						{{/each}}
 
