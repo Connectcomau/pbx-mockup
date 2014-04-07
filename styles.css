@@ -2,3 +2,4 @@ body { padding-top: 10px; }
 a { cursor: pointer }
 .mright { margin-right: 10px }
 .hunt_select { display: inline-block; width: auto; }
+.inline { display: inline-block; }

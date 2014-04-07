@@ -2,7 +2,8 @@ var pbx = {
 	main: '',
 	users: TAFFY(),
 	lines: TAFFY(),
-	groups: TAFFY()
+	groups: TAFFY(),
+	ivr: TAFFY()
 };
 
 Handlebars.registerHelper('names', function(options) {
@@ -58,7 +59,8 @@ function render_main() {
 	var data = {
 		users: pbx.users().get(),
 		lines: pbx.lines().get(),
-		groups: pbx.groups().get()
+		groups: pbx.groups().get(),
+		ivr: pbx.ivr().get()
 	};
 
 	inject('t_'+pbx_main, 'main', data);
@@ -92,9 +94,11 @@ function init_db() {
 			var u = JSON.parse(localStorage.users || '[]');
 			var l = JSON.parse(localStorage.lines || '[]');
 			var g = JSON.parse(localStorage.groups || '[]');
+			var i = JSON.parse(localStorage.ivr || '[]');
 			pbx.users.insert(u);
 			pbx.lines.insert(l);
 			pbx.groups.insert(g);
+			pbx.ivr.insert(i);
 		}
 		catch (e) {
 			console.error(e);
@@ -102,7 +106,16 @@ function init_db() {
 			localStorage.users = '[]';
 			localStorage.groups = '[]';
 			localStorage.lines = '[]';
+			localStorage.ivr = '[]';
 		}
+	}
+
+	if (pbx.ivr().get().length !== 10) {
+		pbx.ivr().remove();
+		for (var x=0; x<10; x++) {
+			pbx.ivr.insert([{ id: x }]);
+		}
+		save_db();
 	}
 }
 
@@ -110,6 +123,7 @@ function reset() {
 	pbx.users().remove();
 	pbx.lines().remove();
 	pbx.groups().remove();
+	pbx.ivr().remove();
 	save_db();
 	render_menu();
 	render_main();
@@ -119,6 +133,7 @@ function save_db() {
 	localStorage.users = pbx.users().stringify();
 	localStorage.lines = pbx.lines().stringify();
 	localStorage.groups = pbx.groups().stringify();
+	localStorage.ivr = pbx.ivr().stringify();
 }
 
 function editable_handler(response, new_value) {
@@ -127,7 +142,10 @@ function editable_handler(response, new_value) {
 	console.log('saving', id, col, new_value);
 	var update = {};
 	update[col] = new_value;
-	pbx[pbx_main]().filter({id: id}).update(update);
+
+	var db = pbx_main;
+	if (db === 'settings') db = 'ivr';
+	pbx[db]().filter({id: id}).update(update);
 	save_db();
 }
 
